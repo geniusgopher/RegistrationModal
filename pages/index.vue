@@ -5,7 +5,7 @@
                 Заполните заявку, чтобы стать резидентом
             </h1>
 
-            <BaseButton @click="open" @close="close" class="px-10 py-3" text="Стать резидентом" />
+            <BaseButton @click="open" class="px-10 py-3" text="Стать резидентом" />
         </header>
 
         <ClientOnly>
@@ -22,5 +22,8 @@ import BaseButton from '~/components/BaseButton.vue';
 
 const { open, close } = useModal({
     component: ModalLegalForm,
+    attrs: {
+        onClose: () => close()
+    }
 })
 </script>

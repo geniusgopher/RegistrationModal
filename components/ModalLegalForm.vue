@@ -72,10 +72,22 @@ const { handleSubmit, errors, defineField } = useForm({
     },
 });
 
-const onSubmit = handleSubmit(values => {
-    alert(JSON.stringify(values, null, 2));
+const onSubmit = handleSubmit(async values => {
+    await $fetch('/api/inquiries', {
+        method: 'POST',
+        body: {
+            name: values.name,
+            phone: values.phone,
+            address: values.address,
+            spaceId: values.space,
+            spaceArea: values.spaceArea,
+            rangeDatesValue: values.rangeDatesValue,
+        }
+    })
     emit('close');
 });
+
+
 
 const [name, nameAttrs] = defineField('name');
 const [phone, phoneAttrs] = defineField('phone');
