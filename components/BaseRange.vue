@@ -36,8 +36,8 @@ const {
     type?: 'date' | 'number';
     errorText?: string;
     modelValue: {
-        from: Date | string | number | undefined;
-        to: Date | string | number | undefined;
+        from: string | number | null;
+        to: string | number | null;
     };
 }>()
 

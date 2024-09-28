@@ -22,20 +22,35 @@ const emit = defineEmits<{
 
 const schema = yup.object({
     name: yup.string().required('Введите наименование организации'),
-    phone: yup.string().required('Введите контактный телефон').matches(/^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$/, 'Введите телефон в формате +7 (999) 999-99-99'),
+    phone: yup.string()
+        .required('Введите контактный телефон')
+        .matches(/^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$/, 'Введите телефон в формате +7 (999) 999-99-99'),
     address: yup.string().required('Введите адрес'),
     space: yup.string().required('Выберите тип помещения'),
     spaceArea: yup.object().shape({
-        from: yup.number().required('Введите начальную площадь').typeError('Введите начальную площадь в числовом формате'),
-        to: yup.number().required('Введите конечную площадь').typeError('Введите конечную площадь в числовом формате').when('from', (from: any, schema: any) => {
-            if (from) return schema.min(from, 'Конечная площадь должна быть больше начальной');
-        }),
+        from: yup.number()
+            .positive('Площадь не может быть отрицательной')
+            .required('Введите начальную площадь')
+            .typeError('Введите начальную площадь в числовом формате'),
+        to: yup.number()
+            .positive('Площадь не может быть отрицательной')
+            .required('Введите конечную площадь')
+            .typeError('Введите конечную площадь в числовом формате')
+            .when('from', (from: any, schema: any) => {
+                if (from) return schema.min(from, 'Конечная площадь должна быть больше начальной');
+            }),
     }),
     rangeDatesValue: yup.object().shape({
-        from: yup.date().required('Введите начальную дату').typeError('Введите начальную дату в формате ГГГГ-ММ-ДД'),
-        to: yup.date().required('Введите конечную дату').typeError('Введите конечную дату в формате ГГГГ-ММ-ДД').when('from', (from: any, schema: any) => {
-            if (from) return schema.min(from, 'Конечная дата должна быть больше начальной');
-        }),
+        from: yup.date()
+            .required('Введите начальную дату')
+            .typeError('Введите начальную дату в формате ГГГГ-ММ-ДД'),
+        to: yup.date()
+            .required('Введите конечную дату')
+            .typeError('Введите конечную дату в формате ГГГГ-ММ-ДД')
+            .when('from', (from: any[], schema: any) => {
+                const [fromValue] = from
+                if (fromValue) return schema.min(fromValue, 'Конечная дата должна быть больше начальной');
+            }),
     }),
 });
 
@@ -51,8 +66,8 @@ const { handleSubmit, errors, defineField } = useForm({
             to: 100,
         },
         rangeDatesValue: {
-            from: new Date(),
-            to: new Date(),
+            from: null,
+            to: null,
         },
     },
 });
